@@ -427,19 +427,33 @@ def predict_batch(df: pd.DataFrame) -> pd.DataFrame:
 def main():
     load_css()
     render_header()
-    
+
+    # Initialize session state
+    if "show_sidebar" not in st.session_state:
+        st.session_state.show_sidebar = True
+
+    # Toggle button outside sidebar
+    if st.button("📂 Toggle Sidebar"):
+        st.session_state.show_sidebar = not st.session_state.show_sidebar
+
     # Sidebar Navigation
-    st.sidebar.markdown("## 🎛️ Navigation")
-    page = st.sidebar.selectbox(
-        "Choose Analysis Type",
-        ["📊 CSV Batch Analysis", "👤 Individual Prediction"],
-        index=0
-    )
-    
+    if st.session_state.show_sidebar:
+        st.sidebar.markdown("## 🎛️ Navigation")
+        page = st.sidebar.selectbox(
+            "Choose Analysis Type",
+            ["📊 CSV Batch Analysis", "👤 Individual Prediction"],
+            index=0
+        )
+    else:
+        # Default page when sidebar hidden
+        page = "📊 CSV Batch Analysis"
+
+    # Page logic
     if page == "📊 CSV Batch Analysis":
         csv_analysis_page()
     else:
         individual_prediction_page()
+
 
 def csv_analysis_page():
     st.markdown('<div class="card-header">📊 CSV Batch Analysis</div>', unsafe_allow_html=True)
